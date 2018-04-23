@@ -13,13 +13,17 @@ class BuyGroup(models.Model):
     user=models.ForeignKey(Users, related_name="user_group")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.name
 
 class Items(models.Model):
     item_name= models.CharField(max_length=255)
     voters = models.ManyToManyField(Users, related_name="votes")
-    picture = models.CharField() # to be changed and figured out
+    picture = models.CharField(max_length=255) # to be changed and figured out
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.item_name
 
 class Inventory(models.Model):
     count = models.IntegerField()
@@ -30,5 +34,6 @@ class Inventory(models.Model):
     max_inventory = models.IntegerField()
     min_inventory = models.IntegerField()
 
-
+    def __str__(self):
+        return self.count
 
