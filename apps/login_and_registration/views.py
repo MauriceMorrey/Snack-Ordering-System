@@ -7,7 +7,7 @@ import bcrypt
 
 def index(request):
     if 'login' in request.session:
-        return redirect('/success')
+        return redirect('/snack_app')
     if 'index' not in request.session:
         request.session['index'] = 'register'
     return render(request, 'login_and_registration/index.html')
@@ -22,7 +22,7 @@ def login(request):
         logged_in = Users.objects.filter(email=request.POST['email'])
         request.session['login'] = logged_in[0].id
         request.session['name'] = "{} {}".format(logged_in[0].first_name, logged_in[0].last_name)
-        return redirect('/success')
+        return redirect('/snack_app')
     return redirect('/')
 
 def register(request):

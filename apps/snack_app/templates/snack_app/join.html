@@ -1,0 +1,11 @@
+
+    {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+            <li class="error">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <form action="/join" method="post">
+        Password: <input type="text" name="password">
+    </form>
