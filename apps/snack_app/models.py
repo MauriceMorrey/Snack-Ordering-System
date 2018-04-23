@@ -5,14 +5,23 @@ from ..login_and_registration.models import Users
 from django.db import models
 
 # Create your models here.
+class BuyGroupManager(models.Manager):
+    def validate(self, data):
+        errors = []
+        if self.filter(name=data['name']).count() > 0:
+            errors.append("Group name already taken!")
+        return errors
+
 
 class BuyGroup(models.Model):
     name=models.CharField(max_length=255)
+    password=models.CharField(max_length=255)
     admin=models.ForeignKey(Users, related_name="group")
-    ta=models.ForeignKey(Users, related_name="ta_group")
-    user=models.ForeignKey(Users, related_name="user_group")
+    tas=models.ManyToManyField(Users, related_name="ta_groups_joined", blank=True, null=True)
+    users=models.ManyToManyField(Users, related_name="user_groups_joined", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = BuyGroupManager()
     def __str__(self):
         return self.name
 
