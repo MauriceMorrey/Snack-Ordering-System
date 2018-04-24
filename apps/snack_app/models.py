@@ -17,13 +17,10 @@ class BuyGroup(models.Model):
     name=models.CharField(max_length=255)
     password=models.CharField(max_length=255)
     admin=models.ForeignKey(Users, related_name="group")
-<<<<<<< HEAD
     ta=models.ForeignKey(Users, related_name="ta_group", blank=True, null=True)
     user=models.ForeignKey(Users, related_name="user_group", blank=True, null=True)
-=======
-    tas=models.ManyToManyField(Users, related_name="ta_groups_joined", blank=True, null=True)
-    users=models.ManyToManyField(Users, related_name="user_groups_joined", blank=True, null=True)
->>>>>>> 56a8a0ebc77c723dc56afc708635dcb802eeba36
+    # tas=models.ManyToManyField(Users, related_name="ta_groups_joined", blank=True, null=True)
+    # users=models.ManyToManyField(Users, related_name="user_groups_joined", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = BuyGroupManager()

@@ -1,9 +1,14 @@
+{% extends 'base_layout.html' %}
+
+
+{% block content%}
+
 {% if messages %}
-    <ul class="flashes">
+<ul class="flashes">
     {% for message in messages %}
-        <li class="error">{{ message }}</li>
+    <li class="error">{{ message }}</li>
     {% endfor %}
-    </ul>
+</ul>
 {% endif %}
 <form action="/snack_app/create" method="post">
     {% csrf_token %}
@@ -11,3 +16,6 @@
     Password for Group: <input type="password" name="password">
     <input type="submit" value="CREATE">
 </form>
+
+
+{% endblock%}
