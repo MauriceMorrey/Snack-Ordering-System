@@ -6,6 +6,8 @@
         {% endfor %}
         </ul>
     {% endif %}
-    <form action="/join" method="post">
+    <form action="/sos/join/{{ group }}" method="POST">
+        {% csrf_token %}
         Password: <input type="text" name="password">
+        <input type="submit" value="JOIN">
     </form>
