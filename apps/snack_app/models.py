@@ -9,8 +9,8 @@ from django.db import models
 class BuyGroup(models.Model):
     name=models.CharField(max_length=255)
     admin=models.ForeignKey(Users, related_name="group")
-    ta=models.ForeignKey(Users, related_name="ta_group")
-    user=models.ForeignKey(Users, related_name="user_group")
+    ta=models.ForeignKey(Users, related_name="ta_group", blank=True, null=True)
+    user=models.ForeignKey(Users, related_name="user_group", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
