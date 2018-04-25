@@ -38,10 +38,10 @@ class Inventory(models.Model):
     count = models.IntegerField()
     item = models.ForeignKey(Items, related_name="stock")
     unit = models.CharField(max_length=255)
-    expiration = models.DateField()
-    amount_used = models.IntegerField()
-    max_inventory = models.IntegerField()
-    min_inventory = models.IntegerField()
+    expiration = models.DateField(blank=True)
+    amount_used = models.IntegerField(blank=True)
+    max_inventory = models.IntegerField(blank=True)
+    min_inventory = models.IntegerField(blank=True)
 
     def __str__(self):
         return self.count

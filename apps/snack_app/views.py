@@ -9,13 +9,22 @@ from django.shortcuts import render, HttpResponse, redirect, reverse
 
 # Create your views here.
 def index(request):
+    if 'login' not in request.session:
+        return redirect('/')
     current_user = Users.objects.get(id=request.session["login"])
-    print current_user.group.all()
+    if 'group' not in request.session and current_user.user_groups_joined.all().count()<1:
+        return redirect('/sos/join')
+    current_group = BuyGroup.objects.get(id=request.session["group"])
     context = {
         "buygroup": BuyGroup.objects.all(),
         "user": current_user
     }
-    print current_user.user_groups_joined
+    if "group" in request.session:
+        if current_user == current_group.admin or current_user in current_group.tas.all():
+            return render(request, "sos/index_admin.html", context)
+    else:
+        return redirect('/sos/join')
+    
     return render(request, "sos/index.html", context)
 
 def new(request):
@@ -44,6 +53,7 @@ def join(request, id = "None"):
     if request.method=="POST":
         if request.POST["password"] == group_buy[0].password:
             group_buy[0].users.add(current_user)
+            request.session['group'] = group_buy[0].id
             return redirect('/')
         return render(request, "sos/join.html")
     else:
@@ -89,9 +99,52 @@ def upgrade_user(request, user_id, group_id):
     group_buy = BuyGroup.objects.all().filter(id=group_id)
     if "login" not in request.session:
         redirect("/")
-    if current_user == group_buy[0].admin:
-        group_buy[0].tas.add(Users.objects.get(id=user_id))
-    return redirect('/sos')
+    # if current_user == group_buy[0].admin:
+    group_buy[0].tas.add(Users.objects.get(id=user_id))
+    return redirect('/sos/admin/users')
 
 def md5encode(key, group):
     return hashlib.sha256(key.encode()+group.encode()).hexdigest()
+
+def joining(request):
+    if request.method == "GET":
+        return render(request, "sos/landing_page.html")
+    elif request.method == "POST":
+        current_user = Users.objects.get(id=request.session["login"])
+        group_name = request.POST["name"]
+        group_buy = BuyGroup.objects.all().filter(name=group_name)
+        if request.POST["password"] == group_buy[0].password:
+            group_buy[0].users.add(current_user)
+            request.session["group"] = group_buy[0].id
+            return redirect('/sos')
+    current_user = Users.objects.get(id=request.session["login"])
+
+def users(request):
+    current_user = Users.objects.get(id=request.session["login"])
+    group_buy = BuyGroup.objects.all().filter(id=request.session['group'])
+    context = {
+        "user": current_user,
+        "group":group_buy[0]
+    }
+    return render(request,'sos/users.html', context)
+
+def downgrade_user(request, user_id, group_id):
+    group_buy = BuyGroup.objects.all().filter(id=group_id)
+    if "login" not in request.session:
+        redirect("/")
+    # if current_user == group_buy[0].admin:
+    group_buy[0].tas.remove(Users.objects.get(id=user_id))
+    #group_buy[0].tas.del(Users.objects.get(id=user_id))
+    return redirect('/sos/admin/users')
+
+def remove_user(request, user_id, group_id):
+    user = Users.objects.get(id=user_id)
+    group_buy = BuyGroup.objects.all().filter(id=group_id)
+    if "login" not in request.session:
+        redirect("/")
+    # if current_user == group_buy[0].admin:
+    if user in group_buy[0].tas.all():
+        group_buy[0].tas.remove(Users.objects.get(id=user_id))
+    group_buy[0].users.remove(Users.objects.get(id=user_id))
+    #group_buy[0].tas.del(Users.objects.get(id=user_id))
+    return redirect('/sos/admin/users')

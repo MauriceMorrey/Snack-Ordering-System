@@ -22,7 +22,13 @@ def login(request):
         logged_in = Users.objects.filter(email=request.POST['email'])
         request.session['login'] = logged_in[0].id
         request.session['name'] = "{} {}".format(logged_in[0].first_name, logged_in[0].last_name)
-        return redirect('/sos')
+        if logged_in[0].user_groups_joined.all().count() > 0:
+            current_group = logged_in[0].user_groups_joined.all()
+            print current_group[0]
+            request.session["group"] = current_group[0].id
+            return redirect('/sos')
+        else:
+            return redirect('/sos/join')
     return redirect('/')
 
 def register(request):

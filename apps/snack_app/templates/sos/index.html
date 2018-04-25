@@ -6,6 +6,7 @@
 </ul>
 {% endif %}
 <select>
+    
     {% for group in user.user_groups_joined.all %}
     {% if group.admin == user %}
     <option value="{{group.name}}">admin-{{group.name}}</option>
